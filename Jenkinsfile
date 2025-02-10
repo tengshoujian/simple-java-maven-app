@@ -1,8 +1,8 @@
 pipeline {
-    agent { docker {
-            image 'maven:3.8.6-openjdk-17' 
-            args '-v /root/.m2:/root/.m2' 
-        }
+    agent { docker {  
+    image 'maven:3.9.5-amazoncorretto-17' // Use an image with Maven and Java 17  
+    args '-v /root/.m2:/root/.m2' // Mount the Maven cache  
+}  
     }
     stages {
         stage('Build') { 
