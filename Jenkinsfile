@@ -26,11 +26,36 @@ pipeline {
                 }
             }
         }
-     
+         stage('SonarQube Analysis') {  
+            steps {  
+                script {  
+                    // 使用 SonarQube 的 Docker 镜像运行扫描  
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside {  
+                        sh """  
+                            sonar-scanner \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}  
+                        """  
+                    }  
+                }  
+            }  
+        }  
+
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
             }
         }
     }
+    post {  
+        success {  
+            echo 'SonarQube analysis completed successfully.'  
+        }  
+        failure {  
+            echo 'SonarQube analysis failed.'  
+        }  
+    }  
+
 }
