@@ -4,11 +4,7 @@ pipeline {
     args '-v /root/.m2:/root/.m2' // Mount the Maven cache  
 }  
     }
- environment {  
-        SONAR_PROJECT_KEY = "mytest" // SonarQube 项目的 Key  
-        SONAR_HOST_URL = "127.0.0.1:9001" // SonarQube 服务器的 URL  
-        SONAR_TOKEN = "squ_66cf9dfb2feaa0f5ac8acf1d6c91241b7ca8af64" // SonarQube 项目的 Token  
-    }  
+
     stages {
         stage('Build') { 
             steps {
