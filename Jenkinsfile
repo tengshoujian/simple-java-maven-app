@@ -30,7 +30,7 @@ pipeline {
             steps {  
                 script {  
                     // 使用 SonarQube 的 Docker 镜像运行扫描  
-                    docker.image('sonarsource/sonar-scanner-cli:latest').inside {  
+                    docker.image('sonarqube:community').inside {  
                         sh """  
                             sonar-scanner \
                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
