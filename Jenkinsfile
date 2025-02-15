@@ -26,12 +26,11 @@ pipeline {
                 }
             }
         }
-         stage('SonarQube Analysis') {  
+        stage('SonarQube Scan') {  
             steps {  
                 script {  
-                    // 使用 SonarQube 的 Docker 镜像运行扫描  
-                    docker.image('sonarqube:community').inside {  
-                        sh """  
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside('-v /var/run/docker.sock:/var/run/docker.sock') {  
+                         sh """  
                             sonar-scanner \
                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                             -Dsonar.sources=. \
@@ -42,7 +41,8 @@ pipeline {
                 }  
             }  
         }  
-
+    }  
+       
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
