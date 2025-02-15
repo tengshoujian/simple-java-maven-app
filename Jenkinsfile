@@ -4,8 +4,10 @@ pipeline {
     args '-v /root/.m2:/root/.m2' // Mount the Maven cache  
 }  
     }
-environment {  
-        SONAR_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'  
+ environment {  
+        SONAR_PROJECT_KEY = "mytest" // SonarQube 项目的 Key  
+        SONAR_HOST_URL = "127.0.0.1:9001" // SonarQube 服务器的 URL  
+        SONAR_TOKEN = "squ_66cf9dfb2feaa0f5ac8acf1d6c91241b7ca8af64" // SonarQube 项目的 Token  
     }  
     stages {
         stage('Build') { 
@@ -23,14 +25,22 @@ environment {
                 }
             }
         }
-        stage('SonarQube Analysis') {  
+       stage('SonarQube Analysis') {  
             steps {  
-                withSonarQubeEnv('sonarqube') { // 'SonarQube' 是你在系统设置中配置的 SonarQube 服务器名称  
-                    sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=mytest -Dsonar.sources=. -Dsonar.host.url=http://127.0.0.1:9001 -Dsonar.login=squ_0a9046966ca12e43d62092653a18207631bac249"  
-                }  
-            }  
-        }  
-      
+                script {  
+                    // 使用 SonarQube 的 Docker 镜像运行扫描  
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside {  
+                        sh """  
+                            sonar-scanner \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_TOKEN}  
+                        """  
+                    }  
+                }
+            }
+       } 
         stage('Deliver') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
