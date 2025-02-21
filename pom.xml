@@ -30,7 +30,7 @@
     </dependencies>  
 
     <build>  
-        <filename>mytest</filename>
+        <finalName>mytest</finalName>
         <plugins>  
             <plugin>  
                 <groupId>org.apache.maven.plugins</groupId>  
